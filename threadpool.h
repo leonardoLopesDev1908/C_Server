@@ -1,8 +1,6 @@
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
 
-#include "queue.h"
-
 #include <pthread.h>
 
 #define MAX_THREAD_NUMBER 8

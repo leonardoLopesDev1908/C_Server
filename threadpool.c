@@ -53,21 +53,33 @@ t_pool *t_pool_init(int num)
 
 void t_pool_add_work(tpool *tp, t_work_t *w)
 {
+  pthread_mutex_lock(tp->lock);
   t_work_t *last = tp->last_work;
   last->next = w;
   tp->last_work = last->next;
+
+  tp->work_count++;
+  
+  pthread_mutex_unlock(tp->lock);
 }
 
 t_work_t *t_pool_pop_work(t_pool *tp)
 {
+  pthread_mutex_lock(tp->lock);
   if(tp->work_count == 0) {
     printf("There is no work on the pool\n");
     return NULL;
   }
   t_work_t *work = tp->first_work;
 
-  tp->first_work = work->next;
+  tp->first_work = tp->first_work->next;
+  work->next = NULL;
+  tp->work_count--;
 
+  if(tp->first_work == NULL)
+    tp->last_work = NULL;
+  
+  pthread_mutex_lock(tp->lock);
   return work;
 }
 
