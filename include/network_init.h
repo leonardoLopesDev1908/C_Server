@@ -22,7 +22,7 @@ void platform_cleanup() { WSACleanup(); }
 #include <arpa/inet.h>
 #include <netdb.h>
 
-void platform_init() {}
+int platform_init() { return 0; }
 void platform_cleanup() {}
 
 #endif

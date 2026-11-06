@@ -10,6 +10,9 @@ const socket_t INVALID_S = INVALID_SOCKET;
 
 #elif __linux__
 
+#include <sys/types.h>
+#include <sys/socket.h>
+
 typedef int socket_t;
 const socket INVALID_S = -1;
 
@@ -20,17 +23,16 @@ enum socket_type {
   UDP = 2,
 };
 
-socket_t *new_socket(socket_type type)
+socket_t new_socket(socket_type type)
 {
-  int err;
-  struct 
-  socket_t socket = (socket_t)socket(AF_INET, type, 0);
-  if(socket == INVALID_S){
+  socket_t new_socket = (socket_t)socket(AF_INET, type, 0);
+
+  if(new_socket == INVALID_S){
     printf("[ERROR] invalid socket\n");
     return NULL;
   }
 
-  return &socket;
+  return new_socket;
 }
 
 #ifdef _WIN32

@@ -46,7 +46,7 @@ t_pool *t_pool_init(int num)
   pthread_t thread;
 
   for(int i = 0; i < num; i++){
-    pthread_create(xc&thread, NULL, thread_work_loop, NULL);
+    pthread_create(&thread, NULL, thread_work_loop, NULL);
     pthread_detach(thread);
   }
   
