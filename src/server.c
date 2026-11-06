@@ -5,7 +5,7 @@
 
 #define BACKLOG 10
 
-static server_loop(server_t *server)
+static void server_loop(server_t *server)
 {
   while(listen(server->socket, BACKLOG) == 0)
   {

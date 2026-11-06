@@ -7,7 +7,7 @@ SRC_DIR := ./src
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJECTS := $(SRCS:.c=.o)
-TARGET := main
+TARGET := main-
 
 INC_DIRS := $(shell find $(SRC_DIR) include -type d)
 INC_FLAGS := $(addprefix -I, $(INC_DIRS))
@@ -27,6 +27,6 @@ $(BUILD_DIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $^ -o $@ 
 
 clean:
-	rm -f $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 
 -include $(DEPS)

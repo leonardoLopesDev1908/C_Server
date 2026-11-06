@@ -23,5 +23,4 @@ server_t *server_init(socket_type type, const char* address, short port);
 void server_stop();
 
 
-
 #endif
