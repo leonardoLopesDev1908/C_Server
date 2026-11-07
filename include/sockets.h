@@ -14,7 +14,7 @@ const socket_t INVALID_S = INVALID_SOCKET;
 #include <sys/socket.h>
 
 typedef int socket_t;
-const socket INVALID_S = -1;
+const socket_t INVALID_S = -1;
 
 #endif
 
@@ -22,7 +22,6 @@ enum socket_type {
   TCP = 1,
   UDP = 2,
 };
-
 socket_t new_socket(socket_type type)
 {
   socket_t new_socket = (socket_t)socket(AF_INET, type, 0);

@@ -5,18 +5,24 @@
 
 #define BACKLOG 10
 
-static void server_loop(server_t *server)
+
+typedef struct {
+  server_t *server;
+  addrinfo *address;
+} session_info_t;
+
+
+static void server_loop(void *args)
 {
   while(listen(server->socket, BACKLOG) == 0)
   {
-    pthread_mutex_lock(server->lock);
-    if(server->stop){
-      pthread_mutex_unlock(server->lock);
+    pthread_mutex_lock(args->server->lock);
+    if(args->server->stop){
+      pthread_mutex_unlock(args->server->lock);
       return;
     }
     pthread_mutex_unlock(server->lock);
     
-    struct sockaddr addr;
     int client_socket;
 
     if((client_socket = accept(server->socket, addr.ai_addr, addr.ai_addrlen)) != 0);
@@ -70,11 +76,14 @@ server_t *server_init(socket_type type, const char *address, const char *port)
     printf("[ERROR]: bind\n");
     freeaddrinfo(res);
     return 1;
-  }
+  };
 
-  freeaddrinfo(res);
-     
-  pthread_create(&server->thread, NULL, server_loop, server);
+  session_info_t *session = (session_info_t*)malloc(sizeof(session_info_t));
+  
+  session->server = server;
+  session->address = session;
+  
+  pthread_create(&server->thread, NULL, server_loop, session);
   pthread_detach(server->thread);
   
   return server;

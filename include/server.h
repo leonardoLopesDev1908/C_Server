@@ -6,13 +6,14 @@
 #include "parser.h"
 #include "session.h"
 #include "sockets.h"
+#include "threadpool.h"
 
-typedef struct{
+typedef struct {
   socket_t socket;
   t_pool *tp;
   parser_t *parser;
   
-  int running;
+  int stop;
   int client_count;
 
   pthread_t thread;

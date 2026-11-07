@@ -8,7 +8,6 @@
 #include <ws2tcpip.h>
 
 
-
 int platform_init()
 {
   WSADATA wsaData{};
@@ -24,5 +23,7 @@ void platform_cleanup() { WSACleanup(); }
 
 int platform_init() { return 0; }
 void platform_cleanup() {}
+
+#endif
 
 #endif

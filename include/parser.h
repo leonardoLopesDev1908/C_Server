@@ -1,7 +1,7 @@
 #ifndef PARSER_HTTP_H
 #define PARSER_HTTP_H
 
-struct typedef {  
+typedef struct {  
   
 } parser_t;
 
