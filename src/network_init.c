@@ -1,0 +1,26 @@
+#include "network_init.h"
+
+#ifdef _WIN32
+
+#include <WinSock2.h>
+#include <Windows.h>
+#include <ws2tcpip.h>
+
+int platform_init()
+{
+  WSADATA wsaData;
+  return WSAStartup(MAKEWORD(2, 2), &wsaData);
+}
+
+void platform_cleanup() { WSACleanup(); }
+
+#elif __linux__
+
+#include <arpa/inet.h>
+#include <netdb.h>
+
+int platform_init() { return 0; }
+void platform_cleanup() {}
+
+#endif
+

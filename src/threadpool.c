@@ -1,9 +1,8 @@
-#include "threadpool.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "threadpool.h"
 
 static void *thread_work_loop(void *tp){
   t_pool *pool = (t_pool*)tp;

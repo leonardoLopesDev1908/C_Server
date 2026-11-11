@@ -1,58 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include <sys/types.h>
+#include <netdb.h>
 
 #include "server.h"
+#include "system_info.h"
 
 #define BACKLOG 10
 
-
 typedef struct {
   server_t *server;
-  addrinfo *address;
+  struct addrinfo *addr;
 } session_info_t;
 
-
-static void server_loop(void *args)
+static void *server_loop(void *args)
 {
-  while(listen(server->socket, BACKLOG) == 0)
+  session_info_t *session = (session_info_t*)args;
+  while(listen(session->server->socket, BACKLOG) == 0)
   {
-    pthread_mutex_lock(args->server->lock);
-    if(args->server->stop){
-      pthread_mutex_unlock(args->server->lock);
-      return;
+    pthread_mutex_lock(session->server->lock);
+    if(session->server->stop){
+      pthread_mutex_unlock(session->server->lock);
+      return NULL;
     }
-    pthread_mutex_unlock(server->lock);
+    pthread_mutex_unlock(session->server->lock);
     
     int client_socket;
 
-    if((client_socket = accept(server->socket, addr.ai_addr, addr.ai_addrlen)) != 0);
+    if((client_socket = accept(
+                               session->server->socket,
+                               session->addr->ai_addr,
+                               NULL)) != 0);
     {
       printf("[ERROR] accept connection\n");
-      return 1;
+      return NULL;
     }
 
     t_work_t *new_session = (t_work_t*)malloc(sizeof(t_work_t));
 
-    t_work_t->arg = &client_socket;
-    t_work_t->func(session_stream);
-    t_work_t->next = NULL;
+    new_session->arg = &client_socket;
+    //new_session->func(session_stream);
+    new_session->next = NULL;
 
-    t_pool_add_work(server->tp, new_session);    
+    t_pool_add_work(session->server->tp, new_session);    
   }
+
+  return NULL;
 }
 
 //https://beej.us/guide/bgnet/
 server_t *server_init(socket_type type, const char *address, const char *port)
 {
-  if(platfform_init() != 0){
+  if(platform_init() != 0){
     printf("[ERROR] platform_init\n");
     return NULL;
   }
   
-  server_t *server = (server_t*)malloc(sizeof(server_t))
+  server_t *server = (server_t*)malloc(sizeof(server_t));
   memset(server, 0, sizeof(server_t));
   
   server->socket = new_socket(type);
+
+  if(server->socket == -1){
+    printf("[ERROR] invalid new socket\n");
+    return NULL;
+  }
   
   long max_threads = get_max_threads();
   server->tp = t_pool_init(max_threads);
@@ -68,22 +82,22 @@ server_t *server_init(socket_type type, const char *address, const char *port)
   {
     printf("[ERROR]: getaddrinfo\n");
     freeaddrinfo(res);
-    return 1;
+    return NULL;
   }
 
   if(bind(server->socket, res->ai_addr, res->ai_addrlen) != 0)
   {
     printf("[ERROR]: bind\n");
     freeaddrinfo(res);
-    return 1;
+    return NULL;
   };
 
-  session_info_t *session = (session_info_t*)malloc(sizeof(session_info_t));
+  session_info_t *session_info = (session_info_t*)malloc(sizeof(session_info_t));
   
-  session->server = server;
-  session->address = session;
+  session_info->server = server;
+  session_info->addr = res;
   
-  pthread_create(&server->thread, NULL, server_loop, session);
+  pthread_create(&server->thread, NULL, server_loop, (void*)session_info);
   pthread_detach(server->thread);
   
   return server;
@@ -96,7 +110,7 @@ void server_stop(server_t *server)
   platform_cleanup();
 
     //free(server->parser);
-  free(tp);
+  free(server->tp);
 
   pthread_mutex_lock(server->lock);
   server->stop = 1;

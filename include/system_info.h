@@ -1,6 +1,5 @@
 #ifndef SYSTEM_INFO_H
 #define SYSTEM_INFO_H
-#include <unistd.h>
 
 #ifdef _WIN32
 
@@ -11,7 +10,7 @@ size_t get_max_threads()
   SYSTEM_INFO sysinfo;
   GetSystemInfo(&sysinfo);
 
-  return sysinfo.dwNumberOfProcessors); 
+  return sysinfo.dwNumberOfProcessors; 
 }
 
 #elif __linux__
