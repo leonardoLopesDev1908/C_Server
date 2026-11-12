@@ -9,15 +9,16 @@
 #include "threadpool.h"
 
 typedef struct {
-  socket_t socket;
-  t_pool *tp;
-  parser_t *parser;
+    socket_t socket;
+    t_pool *tp;
+    parser_t *parser;
+    //session_q *sessions; ?? 
 
-  int stop;
-  int client_count;
+    int stop;
+    int client_count;
 
-  pthread_t thread;
-  pthread_mutex_t *lock;
+    pthread_t thread;
+    pthread_mutex_t *lock;
 } server_t;
 
 server_t *server_init(socket_type type, const char* address, const char *port);

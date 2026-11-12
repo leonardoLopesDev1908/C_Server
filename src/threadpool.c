@@ -4,6 +4,8 @@
 
 #include "threadpool.h"
 
+#define MAX_THREAD_NUMBER 8
+
 static void *thread_work_loop(void *tp){
   t_pool *pool = (t_pool*)tp;
   while(1){
