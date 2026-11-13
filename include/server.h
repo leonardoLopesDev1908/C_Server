@@ -22,7 +22,7 @@ typedef struct {
 } server_t;
 
 server_t *server_init(socket_type type, const char* address, const char *port);
-void server_stop(server_t *server);
+void server_destroy(server_t *server);
 
 
 #endif

@@ -103,18 +103,19 @@ server_t *server_init(socket_type type, const char *address, const char *port)
   return server;
 }
 
-void server_stop(server_t *server)
+void server_destroy(server_t *server)
 {
-  close_socket(server->socket);
-  t_pool_destroy(server->tp);
-  platform_cleanup();
+    close_socket(server->socket);
+    t_pool_destroy(server->tp);
+    platform_cleanup();
 
     //free(server->parser);
-  free(server->tp);
+    free(server->tp);
 
-  pthread_mutex_lock(server->lock);
-  server->stop = 1;
-  pthread_mutex_unlock(server->lock);
+    pthread_mutex_lock(server->lock);
+    server->stop = 1;
+    pthread_mutex_unlock(server->lock);
     
-  printf("Server down\n");
+    free(server);
+    printf("Server down\n");
 }

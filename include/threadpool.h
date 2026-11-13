@@ -19,9 +19,9 @@ typedef struct {
   int work_count;
   int thread_count;
   int stop;
-  pthread_mutex_t *lock;
-  pthread_cond_t *work_cond;
-  pthread_cond_t *finished_cond;
+  pthread_mutex_t lock;
+  pthread_cond_t work_cond;
+  pthread_cond_t finished_cond;
 } t_pool;
 
 
