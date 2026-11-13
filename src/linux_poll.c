@@ -1,5 +1,9 @@
+//DEPRECATED: SIMPLE EXAMPLE OF POLL (LIBEVENT WAS CHOSEN INSTEAD)
 
-//TEMPORARILY THIS WAY. WILL BE CROSS PLATFORM SOON
+
+//The following code was developed by Beejs and is available at:
+//https://beej.us/guide/bgnet/pdf/bgnet_usl_c_1.pdf
+
 
 #ifdef __linux__
 /*
@@ -40,7 +44,7 @@ int get_listener_socket(void)
     int yes=1; //Forsetsockopt() SO_REUSEADDR,below
     int rv;
 
-    struct addrinfohints, *ai, *p;
+    struct addrinfo hints, *ai, *p;
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_INET;
@@ -57,8 +61,7 @@ int get_listener_socket(void)
         if (listener < 0) {
             continue;
         }
-        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes,
-        sizeof(int));
+        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
         if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
             close(listener);
             continue;
@@ -105,7 +108,7 @@ void del_from_pfds(struct pollfd pfds[], int i, int *fd_count)
 void handle_new_connection(int listener, int *fd_count,
                         int *fd_size, struct pollfd **pfds)
 {
-    struct sockaddr_storageremoteaddr; //Client address
+    struct sockaddr_storage remoteaddr; //Client address
     socklen_t addrlen;
     int newfd; // Newly accept()edsocket descriptor
     char remoteIP[INET6_ADDRSTRLEN];
@@ -120,8 +123,8 @@ void handle_new_connection(int listener, int *fd_count,
         printf("pollserver: newconnection from %s onsocket %d\n", inet_ntop2(
                                                                     &remoteaddr, 
                                                                     remoteIP, 
-                                                                    sizeof(remoteIP),
-                                                                    newfd)
+                                                                    sizeof(remoteIP)),
+                                                                    newfd
         );
     }
 }
@@ -179,46 +182,6 @@ void process_connections(int listener, int *fd_count, int *fd_size,
             }
         }
     }
-}
-
-/*
-*Main: createalistener and connectionset, loopforever
-*processingconnections.
-*/
-int main(void)
-{
-    int listener; // Listening socketdescriptor
-
-    // Startoffwith roomfor5connections
-    // (We'll realloc asnecessary)
-    int fd_size = 5;
-    int fd_count = 0;
-    struct pollfd *pfds = malloc(sizeof *pfds * fd_size);
-
-    // Setup and get a listening socket
-    listener = get_listener_socket();
-
-    if (listener ==-1) {
-        fprintf(stderr, "error getting listening socket\n");
-        exit(1);
-    }
-    // Add the listener to set;
-    // Report ready to read on incoming connection
-    pfds[0].fd = listener;
-    pfds[0].events = POLLIN;
-    fd_count = 1; // For the listener
-    puts("pollserver: waiting for connections...");
-    // Main loop
-    for(;;) {
-        int poll_count = poll(pfds, fd_count,-1);
-        if (poll_count ==-1) {
-            perror("poll");
-            exit(1);
-        }
-        process_connections(listener, &fd_count, &fd_size, &pfds);
-    }
-    // Run through connections looking for data to read
-    free(pfds);
 }
 
 #endif

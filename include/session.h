@@ -9,7 +9,7 @@ typedef struct {
     int id;
     socket_t socket;
     char *buffer;
-
+    
 } session_t;
     
 session_t* session_init(socket_t socket, int id);

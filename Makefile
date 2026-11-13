@@ -7,7 +7,7 @@ OBJ := $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 CPPFLAGS := -Iinclude -MMD -MP
 CFLAGS   := -Wall
-LDFLAGS  := -pthread
+LDFLAGS  := -pthread -levent
 
 ifeq ($(OS),Windows_NT)
 	RM_DIR = if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
